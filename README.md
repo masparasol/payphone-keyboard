@@ -7,6 +7,7 @@
   https://www.youtube.com/watch?v=H4fkLxeXRiA&
   - The c code uses the teensy digital pins. It sets one row to LOW at a time, and then checks for which column on which row is low. In this way, the keys can be identified. See final.ccp
   - To push to Teensy (flash Teensy) code can be compiled in the ariduino ide, then press the reset button as in the above youtube video ( https://www.youtube.com/watch?v=H4fkLxeXRiA& )
+  - This page from Teensy has all the keyboard functions. Looks nice! :D We can map the keys to anything. (https://www.pjrc.com/teensy/td_keyboard.html)
 
 Photo of project
 ![Board and Teensy](./matrix-keys-and-teensy.jpg)
