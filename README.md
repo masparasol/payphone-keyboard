@@ -9,8 +9,6 @@
   - To push to Teensy (flash Teensy) code can be compiled in the ariduino ide, then press the reset button as in the above youtube video ( https://www.youtube.com/watch?v=H4fkLxeXRiA& )
   - This page from Teensy has all the keyboard functions. Looks nice! :D We can map the keys to anything. (https://www.pjrc.com/teensy/td_keyboard.html)
 
-Photo of project
-![Board and Teensy](./matrix-keys-and-teensy.jpg)
 
 Since we are using ardiduino software to drive this thing in C we should use the debounce function here
 https://www.youtube.com/watch?v=jYOYgU2vlSE
