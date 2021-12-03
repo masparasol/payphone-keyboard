@@ -3,7 +3,7 @@
   - Aboard is attached to the back of the red payphone keys with matrix wiring by Jaguar
   - The wires go to a teensy chip on a breadboard
   - We use arduino with a teensy extension/library to run c code
-  - We also use the keybaord library as in this video: 
+  - We also use the keyboard library as in this video: 
   https://www.youtube.com/watch?v=H4fkLxeXRiA&
   - The c code uses the teensy digital pins. It sets one row to LOW at a time, and then checks for which column on which row is low. In this way, the keys can be identified. See final.ccp
   - To push to Teensy (flash Teensy) code can be compiled in the ariduino ide, then press the reset button as in the above youtube video ( https://www.youtube.com/watch?v=H4fkLxeXRiA& )
@@ -11,6 +11,12 @@
 
 Photo of project
 ![Board and Teensy](./matrix-keys-and-teensy.jpg)
+
+Since we are using ardiduino software to drive this thing in C we should use the debounce function here
+https://www.youtube.com/watch?v=jYOYgU2vlSE
+
+I will try add that to the code on Friday 12/02/2021 
+Please wish me luck : )
 
 ## Contributors
 - Jaguar for the board, teensy, soldering, and research
