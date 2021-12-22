@@ -1,20 +1,16 @@
 # Readme for Payphone Keyboard Projects
 
-  - Aboard is attached to the back of the red payphone keys with matrix wiring by Jaguar
+  - A board is attached to the back of the red payphone keys with matrix wiring by Jaguar
   - The wires go to a teensy chip on a breadboard
   - We use arduino with a teensy extension/library to run c code
-  - We also use the keyboard library as in this video: 
-  https://www.youtube.com/watch?v=H4fkLxeXRiA&
   - The c code uses the teensy digital pins. It sets one row to LOW at a time, and then checks for which column on which row is low. In this way, the keys can be identified. See final.ccp
   - To push to Teensy (flash Teensy) code can be compiled in the ariduino ide, then press the reset button as in the above youtube video ( https://www.youtube.com/watch?v=H4fkLxeXRiA& )
-  - This page from Teensy has all the keyboard functions. Looks nice! :D We can map the keys to anything. (https://www.pjrc.com/teensy/td_keyboard.html)
+  - The teensy currently takes the keypress and runs the logic to either open the door or keep it closed
 
+Teensy also has an inbuilt debounce function we plan to use in 2022.
 
-Since we are using ardiduino software to drive this thing in C we should use the debounce function here
-https://www.youtube.com/watch?v=jYOYgU2vlSE
-
-I will try add that to the code on Friday 12/02/2021 
-Please wish me luck : )
+For more info, see the Noisebridge Wikipage for the phone:
+https://www.noisebridge.net/wiki/Payphone
 
 ## Contributors
 - Jaguar for the board, teensy, soldering, and research
@@ -23,3 +19,5 @@ Please wish me luck : )
 - Woz for mapping things out and software / hardware strategy
 - Mana for the digital pin idea
 - Patrick for C programming help
+
+Thank You! ***
