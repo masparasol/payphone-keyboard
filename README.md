@@ -12,6 +12,9 @@ Teensy also has an inbuilt debounce function we plan to use in 2022.
 For more info, see the Noisebridge Wikipage for the phone:
 https://www.noisebridge.net/wiki/Payphone
 
+This looks like a good starting point for getting the Teensy to play audio:
+https://forum.pjrc.com/threads/27372-Playing-audio-files-from-Teensy-on-board-memory?p=60614&viewfull=1
+
 ## Contributors
 - Jaguar for the board, teensy, soldering, and research
 - Claus for helping with hardware, software, and championing the project
