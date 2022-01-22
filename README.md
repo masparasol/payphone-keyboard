@@ -17,6 +17,7 @@ https://forum.pjrc.com/threads/27372-Playing-audio-files-from-Teensy-on-board-me
 
 ## Contributors
 - Jaguar for the board, teensy, soldering, and research
+- Ronald C for refactoring the code so it will work consistently
 - Claus for helping with hardware, software, and championing the project
 - Ryan L for software
 - Woz for mapping things out and software / hardware strategy
