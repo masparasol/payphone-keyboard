@@ -1,6 +1,4 @@
-//   #include <Keyboard.h>
 
-//Pin layout here
 const int rowPin0 = 0;
 const int rowPin1 = 1;
 const int rowPin2 = 2;
@@ -9,191 +7,153 @@ const int columnPin0 = 4;
 const int columnPin1 = 5;
 const int columnPin2 = 6;
 const int strikePin = 7;
-const int keysent=0; //This will record when a key has been sent and delay
-boolean buttonState = HIGH; 
-char pinCode[4];
-int pinIdx=0;
-int resetCounter=0;
-// const int delayTimeMS=80;
-// const int timeDoorOpenMS=10000;
 
-//Debounce function
-boolean debounceButton(boolean state,const int currentColumn)
-{
-  boolean stateNow = digitalRead(currentColumn);
-  if(state!=stateNow)
-  {
-    delay(60);
-    stateNow = digitalRead(currentColumn);
-  }
-  return stateNow;
-  
+int pinCodeRingBuffer[4];
+int currentPinIndex = 0;
+
+
+
+
+void setup(){
+    pinMode(rowPin0, OUTPUT);
+    digitalWrite(rowPin0, HIGH);
+
+    pinMode(rowPin1, OUTPUT);
+    digitalWrite(rowPin1, HIGH);
+
+    pinMode(rowPin2, OUTPUT);
+    digitalWrite(rowPin2, HIGH);
+
+    pinMode(rowPin3, OUTPUT);
+    digitalWrite(rowPin3, HIGH);
+
+    pinMode(columnPin0, INPUT_PULLUP);
+    pinMode(columnPin1, INPUT_PULLUP);
+    pinMode(columnPin2, INPUT_PULLUP);
+
+    digitalWrite(strikePin, LOW);
+
+    resetPinCode();
 }
 
-  void setup(){
-      pinMode(rowPin0, OUTPUT);
-      digitalWrite(rowPin0, HIGH);
-      pinMode(rowPin1, OUTPUT);
-      digitalWrite(rowPin1, HIGH);
-      pinMode(rowPin2, OUTPUT);
-      digitalWrite(rowPin2, HIGH);
-      pinMode(rowPin3, OUTPUT);
-      digitalWrite(rowPin3, HIGH);
-      pinMode(columnPin0, INPUT_PULLUP);
-      
-      pinMode(columnPin1, INPUT_PULLUP);
-      
-      pinMode(columnPin2, INPUT_PULLUP);
-
-      digitalWrite(strikePin, LOW);
-      
-  }
-
-  void loop(){
-
-    // Do row 0
-    digitalWrite(rowPin0, LOW);
-    digitalWrite(rowPin1, HIGH);
-    digitalWrite(rowPin2, HIGH);
-    digitalWrite(rowPin3, HIGH);
-
-    
-    if (debounceButton(buttonState,columnPin0) == LOW && buttonState==HIGH) {
-    //   Keyboard.set_key1(KEY_1);
-    //   digitalWrite(strikePin, HIGH);
-    pinCode[pinIdx]='1';
-    pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    //   digitalWrite(strikePin, LOW);
-    }
-    
-
-    if (debounceButton(buttonState,columnPin1) == LOW && buttonState==HIGH) {
-    //   Keyboard.set_key1(KEY_2);
-    pinCode[pinIdx]='2';
-    pinIdx=(pinIdx+1)%4;
-      
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
 
 
-    if (debounceButton(buttonState,columnPin2) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_3);
-    pinCode[pinIdx]='3';
-    pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
 
-    // Do row 1
-    digitalWrite(rowPin0, HIGH);
-    digitalWrite(rowPin1, LOW);
-    digitalWrite(rowPin2, HIGH);
-    digitalWrite(rowPin3, HIGH);
+const int columns[] = { columnPin0, columnPin1, columnPin2 };
+const int rows[] = { rowPin0, rowPin1, rowPin2, rowPin3 };
+const int matrix[4][3] = 
+    { 1, 2, 3
+    , 4, 5, 6
+    , 7, 8, 9
+    ,10, 0, 11
+    };
+const int rowIdentityMatrix[4][4] =
+    { LOW, HIGH, HIGH, HIGH
+    , HIGH, LOW, HIGH, HIGH
+    , HIGH, HIGH, LOW, HIGH
+    , HIGH, HIGH, HIGH, LOW
+    };
 
-    if (debounceButton(buttonState,columnPin0) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_4);
-      pinCode[pinIdx]='4';
-      pinIdx=(pinIdx+1)%4;
-      
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
+void loop(){
+    gateKeep(getCurrentKey());
+}
 
-    if (debounceButton(buttonState,columnPin1) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_5);
-            pinCode[pinIdx]='5';
-            pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
-
-
-      if (debounceButton(buttonState,columnPin2) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_6);
-      pinCode[pinIdx]='6';
-            pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
-
-    // Do row 2
-    digitalWrite(rowPin0, HIGH);
-    digitalWrite(rowPin1, HIGH);
-    digitalWrite(rowPin2, LOW);
-    digitalWrite(rowPin3, HIGH);
-
-    if (debounceButton(buttonState,columnPin0) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_7);
-      pinCode[pinIdx]='7';
-            pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
-
-    if (debounceButton(buttonState,columnPin1) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_8);
-      pinCode[pinIdx]='8';
-            pinIdx=(pinIdx+1)%4;
-    } else {
-      //Keyboard.set_key1(0);
-    }
-    
-
-      if (debounceButton(buttonState,columnPin2) == LOW && buttonState==HIGH) {
-      //Keyboard.set_key1(KEY_9);
-      pinCode[pinIdx]='9';
-            pinIdx=(pinIdx+1)%4;
-    } else {
-    //   Keyboard.set_key1(0);
-    }
-    
-int i=0;
-char codeCheck[]={'1','8','4','8'};
-int correctNumberCount=0;
-for (i=0; i<4; i++)
-{
-    if (pinCode[(pinIdx+i)%4]==codeCheck[i])
+int canRegisterKeyPress[4][3] =
+    { 1, 1, 1
+    , 1, 1, 1
+    , 1, 1, 1
+    , 1, 1, 1
+    };
+int getCurrentKey() {
+    int currentPressedKey = -1;
+    for (int r = 0; r < 4; r++)
     {
-        correctNumberCount++;
+        for (int i = 0; i < 4; i++)
+        {
+            digitalWrite(rows[i], rowIdentityMatrix[r][i]);
+        }
+        for (int c = 0; c < 3; c++)
+        {
+            const bool pressingKey = digitalRead(columns[c]) == LOW;
+            if (pressingKey && canRegisterKeyPress[r][c])
+            {
+                canRegisterKeyPress[r][c] = false;
+                currentPressedKey = matrix[r][c];
+            }
+            else if (!pressingKey)
+            {
+                canRegisterKeyPress[r][c] = true;
+            }
+            delay(2);
+        }
+        delay(3);
+    }
+    return currentPressedKey;
+}
+
+
+
+
+bool canSendKey = true;
+void gateKeep(int key) {
+    if (canSendKey && key >= 0)
+    {
+        canSendKey = false;
+        updateRingBuffer(key);
+        maybeStrikeIt();
+    }
+    else if (key < 0)
+    {
+        canSendKey = true;
     }
 }
 
-if (correctNumberCount==4) {
+
+
+void updateRingBuffer(int key) {
+    pinCodeRingBuffer[currentPinIndex] = key;
+    currentPinIndex = (currentPinIndex + 1) % 4;
+}
+
+
+
+
+void maybeStrikeIt() {
+    int code[] = { 1, 8, 4, 8 };
+    
+    // Check if the strike should strike out
+    for (int i = 0; i < 4; i ++)
+    {
+        bool isValidMatch = true;
+        for (int j = 0; j < 4; j++)
+        {
+            if (pinCodeRingBuffer[(i+j) % 4] != code[j])
+            {
+                isValidMatch = false;
+                break;
+            }   
+        }
+        if (isValidMatch)
+        {
+            reallyStrikeIt();
+            resetPinCode();
+            break;
+        }
+    }
+}
+
+
+
+
+void reallyStrikeIt() {
     digitalWrite(strikePin, HIGH);
-
-    resetCounter++;
-
-}
-else 
-{
+    delay(3000);
     digitalWrite(strikePin, LOW);
 }
-  
-//Time the code is correct counter
-if (resetCounter> (10000/80))
-// if (resetCounter> 125)
-{
-    digitalWrite(strikePin, LOW);
-    resetCounter=0;
 
-    for (i=0; i<4; i++)
-    {
-        pinCode[i]=0;
-    }
+
+
+
+void resetPinCode() {
+    pinCodeRingBuffer[0] = pinCodeRingBuffer[1] = pinCodeRingBuffer[2] = pinCodeRingBuffer[3] = 99;
 }
-  
-  delay(80);
-
-  } 
-
-
-  
